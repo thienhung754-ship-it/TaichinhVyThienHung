@@ -2227,20 +2227,8 @@
                     </div>
                 </div>
 
-                <!-- Debt Status Card -->
-                <div id="mobile-sec-debts" class="mobile-tab-content section-card">
-                    <div class="section-header">
-                        <div class="section-title">
-                            <i data-lucide="shield-alert" style="color: var(--danger)"></i> Trạng thái chi tiết từng khoản nợ
-                        </div>
-                    </div>
-                    <div class="debt-list" id="debt-list-container">
-                        <!-- Dynamic items -->
-                    </div>
-                </div>
-
                 <!-- Receivables Status Card -->
-                <div id="mobile-sec-receivables" class="mobile-tab-content section-card" style="margin-top: 1.25rem;">
+                <div id="mobile-sec-receivables" class="mobile-tab-content section-card">
                     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                         <div class="section-title">
                             <i data-lucide="hand-coins" style="color: #30d158"></i> Công nợ khách hàng phải thu (Người ta nợ mình)
@@ -2248,6 +2236,18 @@
                         <span id="receivables-total-header" style="font-size: 0.85rem; font-weight: 800; color: #30d158;">0 đ</span>
                     </div>
                     <div class="debt-list" id="receivables-list-container">
+                        <!-- Dynamic items -->
+                    </div>
+                </div>
+
+                <!-- Debt Status Card -->
+                <div id="mobile-sec-debts" class="mobile-tab-content section-card" style="margin-top: 1.25rem;">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <i data-lucide="shield-alert" style="color: var(--danger)"></i> Trạng thái chi tiết từng khoản nợ
+                        </div>
+                    </div>
+                    <div class="debt-list" id="debt-list-container">
                         <!-- Dynamic items -->
                     </div>
                 </div>
@@ -2854,6 +2854,7 @@
                 mercy_migration_20260727_v10: localStorage.getItem('mercy_migration_20260727_v10'),
                 mercy_migration_20260728_v11: localStorage.getItem('mercy_migration_20260728_v11'),
                 mercy_migration_20260728_v12: localStorage.getItem('mercy_migration_20260728_v12'),
+                mercy_migration_20260728_v13: localStorage.getItem('mercy_migration_20260728_v13'),
                 mercy_dashboard_healed_v5: localStorage.getItem('mercy_dashboard_healed_v5'),
                 backup_timestamp: new Date().toISOString()
             };
@@ -2891,6 +2892,7 @@
                         if (data.mercy_migration_20260727_v10) localStorage.setItem('mercy_migration_20260727_v10', data.mercy_migration_20260727_v10);
                         if (data.mercy_migration_20260728_v11) localStorage.setItem('mercy_migration_20260728_v11', data.mercy_migration_20260728_v11);
                         if (data.mercy_migration_20260728_v12) localStorage.setItem('mercy_migration_20260728_v12', data.mercy_migration_20260728_v12);
+                        if (data.mercy_migration_20260728_v13) localStorage.setItem('mercy_migration_20260728_v13', data.mercy_migration_20260728_v13);
                         if (data.mercy_dashboard_healed_v5) localStorage.setItem('mercy_dashboard_healed_v5', data.mercy_dashboard_healed_v5);
                         
                         alert('Khôi phục dữ liệu thành công! Ứng dụng sẽ tải lại trang.');
@@ -4009,16 +4011,19 @@
                 const d = debts[k];
                 const paidAmt = Math.max(0, d.initial - d.current);
                 const pct = d.initial > 0 ? Math.max(0, (paidAmt / d.initial * 100)).toFixed(0) : 100;
+                const isPaid = d.current === 0;
+                const barColor = isPaid ? '#30d158' : d.color;
+                const amtColorClass = isPaid ? 'text-green font-semibold' : 'text-red';
                 
                 const div = document.createElement('div');
                 div.className = 'debt-item';
                 div.innerHTML = `
                     <div class="debt-item-header">
                         <span class="debt-name">${d.name}</span>
-                        <span class="debt-amount text-red">${formatVND(d.current)}</span>
+                        <span class="debt-amount ${amtColorClass}">${formatVND(d.current)}</span>
                     </div>
                     <div class="debt-progress-bar-bg">
-                        <div class="debt-progress-bar-fill" style="width: ${pct}%; background-color: ${d.color};"></div>
+                        <div class="debt-progress-bar-fill" style="width: ${pct}%; background-color: ${barColor};"></div>
                     </div>
                     <div class="debt-details">
                         <span>Đã trả: ${formatVND(paidAmt)} (${pct}%)</span>
@@ -5326,9 +5331,9 @@
             }
         }
 
-        // Migration to revert unpaid Techcombank and Vietcombank repayments (July 28, 2026) - v12 with actual cash override
+        // Migration to revert unpaid Techcombank and Vietcombank repayments (July 28, 2026) - v13 with actual cash override and correct VCB outstanding
         function checkJuly28Migration() {
-            if (!localStorage.getItem('mercy_migration_20260728_v12')) {
+            if (!localStorage.getItem('mercy_migration_20260728_v13')) {
                 let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
                 let banksObj = JSON.parse(localStorage.getItem('mercy_banks_v21')) || {};
                 let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
@@ -5350,7 +5355,7 @@
                     debtsObj.tcb.notes = "Chưa quét nợ đợt 27/7 (1.5M)";
                 }
                 if (debtsObj.vcb) {
-                    debtsObj.vcb.current = 18153840; // 17,890,566 + 263,274
+                    debtsObj.vcb.current = 17674844; // VCB outstanding corrected
                     debtsObj.vcb.notes = "Chưa thanh toán dư nợ thẻ tín dụng VCB (263k)";
                 }
 
@@ -5358,7 +5363,8 @@
                 localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
                 localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
                 
-                // Mark migration v12 as done
+                // Mark migration v13 as done
+                localStorage.setItem('mercy_migration_20260728_v13', 'true');
                 localStorage.setItem('mercy_migration_20260728_v12', 'true');
                 localStorage.setItem('mercy_migration_20260728_v11', 'true');
             }

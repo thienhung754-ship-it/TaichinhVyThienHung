@@ -2079,6 +2079,7 @@
                 mercy_migration_20260727_v10: localStorage.getItem('mercy_migration_20260727_v10'),
                 mercy_migration_20260728_v11: localStorage.getItem('mercy_migration_20260728_v11'),
                 mercy_migration_20260728_v12: localStorage.getItem('mercy_migration_20260728_v12'),
+                mercy_migration_20260728_v13: localStorage.getItem('mercy_migration_20260728_v13'),
                 mercy_dashboard_healed_v5: localStorage.getItem('mercy_dashboard_healed_v5'),
                 backup_timestamp: new Date().toISOString()
             };
@@ -2116,6 +2117,7 @@
                         if (data.mercy_migration_20260727_v10) localStorage.setItem('mercy_migration_20260727_v10', data.mercy_migration_20260727_v10);
                         if (data.mercy_migration_20260728_v11) localStorage.setItem('mercy_migration_20260728_v11', data.mercy_migration_20260728_v11);
                         if (data.mercy_migration_20260728_v12) localStorage.setItem('mercy_migration_20260728_v12', data.mercy_migration_20260728_v12);
+                        if (data.mercy_migration_20260728_v13) localStorage.setItem('mercy_migration_20260728_v13', data.mercy_migration_20260728_v13);
                         if (data.mercy_dashboard_healed_v5) localStorage.setItem('mercy_dashboard_healed_v5', data.mercy_dashboard_healed_v5);
                         
                         alert('Khôi phục dữ liệu thành công! Ứng dụng sẽ tải lại trang.');
@@ -3227,16 +3229,19 @@
                 const d = debts[k];
                 const paidAmt = Math.max(0, d.initial - d.current);
                 const pct = d.initial > 0 ? Math.max(0, (paidAmt / d.initial * 100)).toFixed(0) : 100;
+                const isPaid = d.current === 0;
+                const barColor = isPaid ? '#30d158' : d.color;
+                const amtColorClass = isPaid ? 'text-green font-semibold' : 'text-red';
                 
                 const div = document.createElement('div');
                 div.className = 'debt-item';
                 div.innerHTML = `
                     <div class="debt-item-header">
                         <span class="debt-name">${d.name}</span>
-                        <span class="debt-amount text-red">${formatVND(d.current)}</span>
+                        <span class="debt-amount ${amtColorClass}">${formatVND(d.current)}</span>
                     </div>
                     <div class="debt-progress-bar-bg">
-                        <div class="debt-progress-bar-fill" style="width: ${pct}%; background-color: ${d.color};"></div>
+                        <div class="debt-progress-bar-fill" style="width: ${pct}%; background-color: ${barColor};"></div>
                     </div>
                     <div class="debt-details">
                         <span>Đã trả: ${formatVND(paidAmt)} (${pct}%)</span>
