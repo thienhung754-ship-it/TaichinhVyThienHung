@@ -1969,22 +1969,173 @@
 
         function updateDailyCountdown() {
             const now = new Date();
-            const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-            const diffMs = endOfDay - now;
             
-            const countdownEl = document.getElementById('daily-countdown');
+            // 1. Silent auto-reset when real date changes
+            const todayStr = now.toLocaleDateString('sv'); // sv format: YYYY-MM-DD
+            const lastReset = localStorage.getItem('mercy_last_daily_reset_date');
+            
+            // Initialize on first ever check
+            if (!lastReset) {
+                localStorage.setItem('mercy_last_daily_reset_date', todayStr);
+            } else if (lastReset !== todayStr) {
+                let dailyCount = 0;
+                if (typeof projects !== 'undefined' && Array.isArray(projects)) {
+                    projects.forEach(p => {
+                        if (p.category === 'daily') {
+                            p.collected = false;
+                            p.tasks.forEach(t => t.done = false);
+                            dailyCount++;
+                        }
+                    });
+                    if (dailyCount > 0) {
+                        saveToStorage();
+                        renderAll();
+                    }
+                }
+                localStorage.setItem('mercy_last_daily_reset_date', todayStr);
+            }
+
+            const countdownEl = document.getElementById('daily-countdown-right') || document.getElementById('daily-countdown');
             if (!countdownEl) return;
 
-            if (diffMs <= 0) {
+            // 2. Dynamic Schedule and Active Task Highlighting
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            let activeTaskRow = null;
+            let activeTaskEndMin = 1440; // Default to end of day
+            let activeTaskName = "";
+
+            // Find all item rows
+            const rows = document.querySelectorAll('.ms-item-row');
+            rows.forEach(row => {
+                const start = parseInt(row.getAttribute('data-start'));
+                const end = parseInt(row.getAttribute('data-end'));
+                
+                if (!isNaN(start) && !isNaN(end)) {
+                    if (currentMinutes >= start && currentMinutes < end) {
+                        // Highlight active row with a premium gold styling and subtle pulse animation
+                        row.style.background = 'rgba(255, 159, 10, 0.12)';
+                        row.style.border = '1px solid rgba(255, 159, 10, 0.4)';
+                        row.style.boxShadow = '0 0 8px rgba(255, 159, 10, 0.1)';
+                        row.style.fontWeight = '700';
+                        
+                        // Add active label/badge if not already present
+                        let badge = row.querySelector('.active-task-badge');
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'active-task-badge';
+                            badge.style.fontSize = '0.62rem';
+                            badge.style.padding = '0.1rem 0.35rem';
+                            badge.style.background = '#ff9f0a';
+                            badge.style.color = '#000000';
+                            badge.style.borderRadius = '4px';
+                            badge.style.fontWeight = '800';
+                            badge.style.marginLeft = '0.5rem';
+                            badge.style.display = 'inline-block';
+                            badge.style.flexShrink = '0';
+                            badge.textContent = 'Đang diễn ra';
+                            
+                            // Find the label element to append
+                            const label = row.querySelector('label');
+                            if (label) {
+                                label.appendChild(badge);
+                            }
+                        }
+                        
+                        activeTaskRow = row;
+                        activeTaskEndMin = end;
+                        
+                        // Extract task name
+                        const labelText = row.querySelector('label') ? row.querySelector('label').innerText : '';
+                        activeTaskName = labelText.replace('Đang diễn ra', '').trim();
+                    } else {
+                        // Reset styling for inactive rows
+                        row.style.background = 'transparent';
+                        row.style.border = 'none';
+                        row.style.boxShadow = 'none';
+                        row.style.fontWeight = 'normal';
+                        
+                        const badge = row.querySelector('.active-task-badge');
+                        if (badge) {
+                            badge.remove();
+                        }
+                    }
+                }
+            });
+
+            // 3. Dynamic Banner Update based on current block
+            const bannerContainer = document.getElementById('ms-live-focus-banner');
+            if (bannerContainer) {
+                let bannerHTML = '';
+                if (currentMinutes >= 450 && currentMinutes < 810) { // 07:30 - 13:30
+                    bannerHTML = `
+                        <div style="background: rgba(48, 209, 88, 0.15); border: 1px solid rgba(48, 209, 88, 0.35); border-radius: 10px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="sun" style="width: 18px; height: 18px; color: #30d158; flex-shrink: 0;"></i>
+                            <span><strong>ĐANG TRONG KHUNG GIỜ SÁNG & TRƯA (07:30 - 13:30):</strong> Khởi động ngày mới tập trung và dứt điểm công việc chính!</span>
+                        </div>
+                    `;
+                } else if (currentMinutes >= 810 && currentMinutes < 1170) { // 13:30 - 19:30
+                    bannerHTML = `
+                        <div style="background: rgba(10, 132, 255, 0.15); border: 1px solid rgba(10, 132, 255, 0.35); border-radius: 10px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="phone-call" style="width: 18px; height: 18px; color: #0a84ff; flex-shrink: 0;"></i>
+                            <span><strong>ĐANG TRONG KHUNG GIỜ CHIỀU & CEO MERCY (13:30 - 19:30):</strong> Hỗ trợ khách hàng, chốt lead đợt 2, phối hợp Dev & thể thao nâng cao sức khỏe!</span>
+                        </div>
+                    `;
+                } else if (currentMinutes >= 1170 && currentMinutes < 1380) { // 19:30 - 23:00
+                    bannerHTML = `
+                        <div style="background: rgba(255, 159, 10, 0.15); border: 1px solid rgba(255, 159, 10, 0.35); border-radius: 10px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="code-2" style="width: 18px; height: 18px; color: #ff9f0a; flex-shrink: 0;"></i>
+                            <span><strong>ĐANG TRONG KHUNG GIỜ TỐI & ĐÊM (19:30 - 23:00):</strong> Triển khai dự án Đại lý Mercy, Outsource Sơn & đối chiếu cập nhật sổ sách thu chi!</span>
+                        </div>
+                    `;
+                } else { // 23:00 - 07:30
+                    bannerHTML = `
+                        <div style="background: rgba(191, 90, 242, 0.15); border: 1px solid rgba(191, 90, 242, 0.35); border-radius: 10px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="moon" style="width: 18px; height: 18px; color: #bf5af2; flex-shrink: 0;"></i>
+                            <span><strong>ĐANG TRONG KHUNG GIỜ NGHỈ NGƠI & NGỦ NGON (23:00 - 07:30):</strong> Nạp năng lượng tuyệt đối cho ngày mới! (Nhiệm vụ 24h bắt đầu lúc 07:30 sáng).</span>
+                        </div>
+                    `;
+                }
+                
+                // Only replace if content changed to avoid flickering
+                if (bannerContainer.dataset.currentHTML !== bannerHTML) {
+                    bannerContainer.innerHTML = bannerHTML;
+                    bannerContainer.dataset.currentHTML = bannerHTML;
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                }
+            }
+
+            // 4. Countdown timer calculations
+            let targetMs = 0;
+            if (activeTaskRow) {
+                // If there is an active task, count down to the end of the active task
+                const endHour = Math.floor(activeTaskEndMin / 60);
+                const endMin = activeTaskEndMin % 60;
+                const endOfTask = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMin, 0, 0);
+                targetMs = endOfTask - now;
+            } else {
+                // If in sleep period or between tasks, count down to the start of schedule (07:30)
+                let startOfDayTask = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 30, 0, 0);
+                if (currentMinutes >= 1380) {
+                    // It is after 23:00, target is 07:30 of the next day
+                    startOfDayTask.setDate(startOfDayTask.getDate() + 1);
+                }
+                targetMs = startOfDayTask - now;
+            }
+
+            if (targetMs <= 0) {
                 countdownEl.innerHTML = `<i data-lucide="clock" style="width: 14px; height: 14px;"></i> Hết giờ!`;
                 return;
             }
+
+            const hours = Math.floor(targetMs / (1000 * 60 * 60));
+            const minutes = Math.floor((targetMs % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((targetMs % (1000 * 60)) / 1000);
             
-            const hours = Math.floor(diffMs / (1000 * 60 * 60));
-            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-            
-            countdownEl.innerHTML = `<i data-lucide="clock" style="width: 14px; height: 14px; color: #ff9f0a;"></i> Còn ${hours}h ${minutes}m ${seconds}s`;
+            const timerColor = activeTaskRow ? '#ff9f0a' : '#bf5af2';
+            const labelText = activeTaskRow ? 'Xong việc sau' : 'Nhiệm vụ sau bắt đầu sau';
+            countdownEl.innerHTML = `<i data-lucide="clock" style="width: 14px; height: 14px; color: ${timerColor};"></i> ${labelText}: ${hours}h ${minutes}m ${seconds}s`;
         }
 
         // Automatically set filter default value to 'this-month' and load
