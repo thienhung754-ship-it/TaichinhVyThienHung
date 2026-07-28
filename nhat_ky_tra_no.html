@@ -2416,7 +2416,7 @@
         const DEFAULT_DEBTS = {
             momo: { name: "Ví Trả Sau MoMo", initial: 5000000, current: 0, color: "var(--danger)", notes: "Đã xóa sổ hoàn toàn ngày 09/07" },
             "the-anh": { name: "Nợ anh Thế Anh", initial: 8000000, current: 0, color: "var(--secondary)", notes: "Đã dứt điểm ngày 19/07" },
-            tcb: { name: "Vay Techcombank", initial: 16000000, current: 6985000, color: "var(--indigo)", notes: "Chưa quét nợ đợt 27/7 (1.5M)" },
+            tcb: { name: "Vay Techcombank", initial: 16000000, current: 5615104, color: "var(--indigo)", notes: "Đã quét nợ đợt 27/7 (Gốc 1.36M, Lãi 107k)" },
             vcb: { name: "Thẻ Tín Dụng VCB", initial: 20000000, current: 17674844, color: "var(--warning)", notes: "Dư nợ thẻ tín dụng VCB thực tế" },
             "old-loan": { name: "Khoản Vay Cũ 50M", initial: 50000000, current: 40100000, color: "var(--text-secondary)", notes: "Góp đợt 23/7 thành công" },
             "dev-hung": { name: "Nợ Dev Tín (Dự án anh Hưng)", initial: 5000000, current: 2000000, color: "var(--indigo)", notes: "Còn lại 2M chưa trả" },
@@ -2426,7 +2426,7 @@
 
         // Starting Bank Balances (Reconciled post-migration July 27)
         const DEFAULT_BANKS = {
-            tcb: 9500000,
+            tcb: 8022439,
             mbbank: 0,
             vcb: 89167,
             tcb_company: 3183790
@@ -2468,7 +2468,7 @@
             { id: 31, date: "2026-07-25", type: "expense", category: "food", bank: "tcb", amount: 44000, note: "Tiền ăn uống (44k)" },
             { id: 32, date: "2026-07-25", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 625571, note: "Chi phí Quảng cáo Ads (Tự động cân bằng số dư VCB)" },
             
-            // 12 new transactions (Yesterday and Today)
+            // 14 new transactions (Yesterday and Today)
             { id: 1785160000001, date: "2026-07-26", type: "expense", category: "food", bank: "tcb", amount: 160000, note: "Mua đồ thắp hương (trái cây thắp nhang)" },
             { id: 1785160000002, date: "2026-07-26", type: "expense", category: "food", bank: "tcb", amount: 20000, note: "Tiền ăn bánh mì" },
             { id: 1785160000003, date: "2026-07-26", type: "expense", category: "food", bank: "tcb", amount: 20000, note: "Tiền mua nước giải khát" },
@@ -2479,7 +2479,9 @@
             { id: 1785160000008, date: "2026-07-27", type: "income", category: "outsource", bank: "tcb_company", amount: 798000, note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 119.7k)" },
             { id: 1785160000009, date: "2026-07-27", type: "transfer", bank: "tcb", targetBank: "vcb", amount: 1093584, note: "Chuyển tiền sang Vietcombank" },
             { id: 1785160000011, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 788695, note: "Chi phí chạy Ads quảng cáo (VCB checking)" },
-            { id: 1785160000012, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 215722, note: "Chi phí Quảng cáo Ads (VCB credit card)" }
+            { id: 1785160000012, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 215722, note: "Chi phí Quảng cáo Ads (VCB credit card)" },
+            { id: 1785160000013, date: "2026-07-28", type: "debt_repayment", targetDebt: "tcb", bank: "tcb", amount: 1369896, note: "Thanh toán gốc trả góp Techcombank tháng này (chủ động trừ)" },
+            { id: 1785160000014, date: "2026-07-28", type: "expense", category: "other", bank: "tcb", amount: 107665, note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)" }
         ];
 
         // Core memory arrays loaded from localStorage
@@ -2976,6 +2978,7 @@
                 mercy_migration_20260728_v11: localStorage.getItem('mercy_migration_20260728_v11'),
                 mercy_migration_20260728_v12: localStorage.getItem('mercy_migration_20260728_v12'),
                 mercy_migration_20260728_v13: localStorage.getItem('mercy_migration_20260728_v13'),
+                mercy_migration_20260728_v14: localStorage.getItem('mercy_migration_20260728_v14'),
                 mercy_dashboard_healed_v5: localStorage.getItem('mercy_dashboard_healed_v5'),
                 backup_timestamp: new Date().toISOString()
             };
@@ -3014,6 +3017,7 @@
                         if (data.mercy_migration_20260728_v11) localStorage.setItem('mercy_migration_20260728_v11', data.mercy_migration_20260728_v11);
                         if (data.mercy_migration_20260728_v12) localStorage.setItem('mercy_migration_20260728_v12', data.mercy_migration_20260728_v12);
                         if (data.mercy_migration_20260728_v13) localStorage.setItem('mercy_migration_20260728_v13', data.mercy_migration_20260728_v13);
+                        if (data.mercy_migration_20260728_v14) localStorage.setItem('mercy_migration_20260728_v14', data.mercy_migration_20260728_v14);
                         if (data.mercy_dashboard_healed_v5) localStorage.setItem('mercy_dashboard_healed_v5', data.mercy_dashboard_healed_v5);
                         
                         alert('Khôi phục dữ liệu thành công! Ứng dụng sẽ tải lại trang.');
@@ -5452,39 +5456,62 @@
             }
         }
 
-        // Migration to revert unpaid Techcombank and Vietcombank repayments (July 28, 2026) - v13 with actual cash override and correct VCB outstanding
+        // Migration to revert unpaid Techcombank and Vietcombank repayments (July 28, 2026) - v14 with TCB active deduction
         function checkJuly28Migration() {
-            if (!localStorage.getItem('mercy_migration_20260728_v13')) {
+            if (!localStorage.getItem('mercy_migration_20260728_v14')) {
                 let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
                 let banksObj = JSON.parse(localStorage.getItem('mercy_banks_v21')) || {};
                 let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
 
-                // 1. Explicitly filter out the unpaid repayments from transactions list
+                // 1. Explicitly filter out the unpaid old repayments and new payments to prevent duplication
                 txsList = txsList.filter(t => {
                     const isTCBRepay = t.note && t.note.includes("Tự động quét nợ Techcombank (Hạn 27/7)");
                     const isVCBRepay = t.note && t.note.includes("Thanh toán dư nợ thẻ tín dụng VCB");
-                    return !isTCBRepay && !isVCBRepay;
+                    const isTCBPaidNew1 = t.note && t.note.includes("Thanh toán gốc trả góp Techcombank tháng này");
+                    const isTCBPaidNew2 = t.note && t.note.includes("Thanh toán lãi trả góp Techcombank tháng này");
+                    return !isTCBRepay && !isVCBRepay && !isTCBPaidNew1 && !isTCBPaidNew2;
                 });
 
-                // 2. Explicitly force bank balances to the actual values confirmed by the user
-                banksObj.tcb = 9500000;
+                // 2. Explicitly force bank balances: TCB is adjusted by subtracting principal and interest
+                banksObj.tcb = 8022439;
                 banksObj.vcb = 89167;
 
-                // 3. Revert debt balances back to unpaid states (repayments not deducted)
+                // 3. Revert VCB to corrected amount and TCB to paid amount
                 if (debtsObj.tcb) {
-                    debtsObj.tcb.current = 6985000; // 5,485,000 + 1,500,000
-                    debtsObj.tcb.notes = "Chưa quét nợ đợt 27/7 (1.5M)";
+                    debtsObj.tcb.current = 5615104; // 6,985,000 - 1,369,896
+                    debtsObj.tcb.notes = "Đã quét nợ đợt 27/7 (Gốc 1.36M, Lãi 107k)";
                 }
                 if (debtsObj.vcb) {
-                    debtsObj.vcb.current = 17674844; // VCB outstanding corrected
-                    debtsObj.vcb.notes = "Chưa thanh toán dư nợ thẻ tín dụng VCB (263k)";
+                    debtsObj.vcb.current = 17674844;
+                    debtsObj.vcb.notes = "Dư nợ thẻ tín dụng VCB thực tế";
                 }
+
+                // 4. Append the two active payments
+                txsList.push({
+                    id: 1785160000013,
+                    date: "2026-07-28",
+                    type: "debt_repayment",
+                    targetDebt: "tcb",
+                    bank: "tcb",
+                    amount: 1369896,
+                    note: "Thanh toán gốc trả góp Techcombank tháng này (chủ động trừ)"
+                });
+                txsList.push({
+                    id: 1785160000014,
+                    date: "2026-07-28",
+                    type: "expense",
+                    category: "other",
+                    bank: "tcb",
+                    amount: 107665,
+                    note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)"
+                });
 
                 localStorage.setItem('mercy_transactions_v22', JSON.stringify(txsList));
                 localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
                 localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
                 
-                // Mark migration v13 as done
+                // Mark migration v14 as done
+                localStorage.setItem('mercy_migration_20260728_v14', 'true');
                 localStorage.setItem('mercy_migration_20260728_v13', 'true');
                 localStorage.setItem('mercy_migration_20260728_v12', 'true');
                 localStorage.setItem('mercy_migration_20260728_v11', 'true');
