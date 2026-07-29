@@ -1899,7 +1899,7 @@
             vcb: { name: "Thẻ Tín Dụng VCB", initial: 20000000, current: 17674844, color: "var(--warning)", notes: "Dư nợ thẻ tín dụng VCB thực tế" },
             "old-loan": { name: "Khoản Vay Cũ 50M", initial: 50000000, current: 40100000, color: "var(--text-secondary)", notes: "Góp đợt 23/7 thành công" },
             "dev-hung": { name: "Nợ Dev Tín (Dự án anh Hưng)", initial: 5000000, current: 2000000, color: "var(--indigo)", notes: "Còn lại 2M chưa trả" },
-            "dev-kien": { name: "Nợ Dev Kiên (OnlyOffice)", initial: 224250, current: 403800, color: "var(--indigo)", notes: "15% hoa hồng cài đặt OnlyOffice cộng dồn" },
+            "dev-kien": { name: "Nợ Dev Kiên (OnlyOffice)", initial: 224250, current: 503800, color: "var(--indigo)", notes: "15% hoa hồng cài đặt OnlyOffice cộng dồn" },
             di: { name: "Khoản vay của Dì", initial: 50000000, current: 50000000, color: "var(--secondary)", notes: "Lãi suất 0%, chưa áp lực thời gian" }
         };
 
@@ -1907,7 +1907,7 @@
         const DEFAULT_BANKS = {
             tcb: 7931439,
             mbbank: 0,
-            vcb: 89167,
+            vcb: 388167,
             tcb_company: 3582790
         };
 
@@ -1963,7 +1963,8 @@
             { id: 1785160000014, date: "2026-07-28", type: "expense", category: "other", bank: "tcb", amount: 107665, note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)" },
             { id: 1785160000015, date: "2026-07-29", type: "income", category: "outsource", bank: "tcb_company", amount: 399000, note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)" },
             { id: 1785160000016, date: "2026-07-29", type: "expense", category: "food", bank: "tcb", amount: 60000, note: "Tiền ăn sáng" },
-            { id: 1785160000017, date: "2026-07-29", type: "expense", category: "food", bank: "tcb", amount: 31000, note: "Tiền thờ cúng (đồ thắp hương)" }
+            { id: 1785160000017, date: "2026-07-29", type: "expense", category: "food", bank: "tcb", amount: 31000, note: "Tiền thờ cúng (đồ thắp hương)" },
+            { id: 1785160000018, date: "2026-07-29", type: "income", category: "outsource", bank: "vcb", amount: 299000, note: "Thu nhập cài OnlyOffice (nợ Kiên 100k công cài + xăng)" }
         ];
 
         let debts = {};
@@ -2240,6 +2241,7 @@
                 mercy_migration_20260729_v15: localStorage.getItem('mercy_migration_20260729_v15'),
                 mercy_migration_20260729_v16: localStorage.getItem('mercy_migration_20260729_v16'),
                 mercy_migration_20260729_v17: localStorage.getItem('mercy_migration_20260729_v17'),
+                mercy_migration_20260729_v18: localStorage.getItem('mercy_migration_20260729_v18'),
                 mercy_dashboard_healed_v5: localStorage.getItem('mercy_dashboard_healed_v5'),
                 backup_timestamp: new Date().toISOString()
             };
@@ -2282,6 +2284,7 @@
                         if (data.mercy_migration_20260729_v15) localStorage.setItem('mercy_migration_20260729_v15', data.mercy_migration_20260729_v15);
                         if (data.mercy_migration_20260729_v16) localStorage.setItem('mercy_migration_20260729_v16', data.mercy_migration_20260729_v16);
                         if (data.mercy_migration_20260729_v17) localStorage.setItem('mercy_migration_20260729_v17', data.mercy_migration_20260729_v17);
+                        if (data.mercy_migration_20260729_v18) localStorage.setItem('mercy_migration_20260729_v18', data.mercy_migration_20260729_v18);
                         if (data.mercy_dashboard_healed_v5) localStorage.setItem('mercy_dashboard_healed_v5', data.mercy_dashboard_healed_v5);
                         
                         alert('Khôi phục dữ liệu thành công! Ứng dụng sẽ tải lại trang.');
