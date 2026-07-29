@@ -2414,7 +2414,7 @@
 
         // Starting Bank Balances (Reconciled post-migration July 27)
         const DEFAULT_BANKS = {
-            tcb: 8022439,
+            tcb: 7931439,
             mbbank: 0,
             vcb: 89167,
             tcb_company: 3582790
@@ -2470,7 +2470,9 @@
             { id: 1785160000012, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 215722, note: "Chi phí Quảng cáo Ads (VCB credit card)" },
             { id: 1785160000013, date: "2026-07-28", type: "debt_repayment", targetDebt: "tcb", bank: "tcb", amount: 1369896, note: "Thanh toán gốc trả góp Techcombank tháng này (chủ động trừ)" },
             { id: 1785160000014, date: "2026-07-28", type: "expense", category: "other", bank: "tcb", amount: 107665, note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)" },
-            { id: 1785160000015, date: "2026-07-29", type: "income", category: "outsource", bank: "tcb_company", amount: 399000, note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)" }
+            { id: 1785160000015, date: "2026-07-29", type: "income", category: "outsource", bank: "tcb_company", amount: 399000, note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)" },
+            { id: 1785160000016, date: "2026-07-29", type: "expense", category: "food", bank: "tcb", amount: 60000, note: "Tiền ăn sáng" },
+            { id: 1785160000017, date: "2026-07-29", type: "expense", category: "food", bank: "tcb", amount: 31000, note: "Tiền thờ cúng (đồ thắp hương)" }
         ];
 
         // Core memory arrays loaded from localStorage
@@ -2973,6 +2975,7 @@
                 mercy_migration_20260728_v14: localStorage.getItem('mercy_migration_20260728_v14'),
                 mercy_migration_20260729_v15: localStorage.getItem('mercy_migration_20260729_v15'),
                 mercy_migration_20260729_v16: localStorage.getItem('mercy_migration_20260729_v16'),
+                mercy_migration_20260729_v17: localStorage.getItem('mercy_migration_20260729_v17'),
                 mercy_dashboard_healed_v5: localStorage.getItem('mercy_dashboard_healed_v5'),
                 backup_timestamp: new Date().toISOString()
             };
@@ -3014,6 +3017,7 @@
                         if (data.mercy_migration_20260728_v14) localStorage.setItem('mercy_migration_20260728_v14', data.mercy_migration_20260728_v14);
                         if (data.mercy_migration_20260729_v15) localStorage.setItem('mercy_migration_20260729_v15', data.mercy_migration_20260729_v15);
                         if (data.mercy_migration_20260729_v16) localStorage.setItem('mercy_migration_20260729_v16', data.mercy_migration_20260729_v16);
+                        if (data.mercy_migration_20260729_v17) localStorage.setItem('mercy_migration_20260729_v17', data.mercy_migration_20260729_v17);
                         if (data.mercy_dashboard_healed_v5) localStorage.setItem('mercy_dashboard_healed_v5', data.mercy_dashboard_healed_v5);
                         
                         alert('Khôi phục dữ liệu thành công! Ứng dụng sẽ tải lại trang.');
@@ -5514,25 +5518,26 @@
             }
         }
 
-        // Migration for new OnlyOffice sale +399k tcb_company, nợ Kiên 15%, and schedule rearrangement (July 29, 2026) - v16
+        // Migration for new OnlyOffice sale +399k tcb_company, nợ Kiên 15%, schedule rearrangement, and daily expenses (July 29, 2026) - v17
         function checkJuly29Migration() {
-            if (!localStorage.getItem('mercy_migration_20260729_v16')) {
+            if (!localStorage.getItem('mercy_migration_20260729_v17')) {
                 let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
                 let banksObj = JSON.parse(localStorage.getItem('mercy_banks_v21')) || {};
                 let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
 
                 // 1. Filter out to prevent duplicate runs
-                txsList = txsList.filter(t => t.id !== 1785160000015);
+                txsList = txsList.filter(t => t.id !== 1785160000015 && t.id !== 1785160000016 && t.id !== 1785160000017);
 
-                // 2. Update company balance
+                // 2. Update bank balances
                 banksObj.tcb_company = 3582790; // 3,183,790 + 399,000
+                banksObj.tcb = 7931439; // 8,022,439 - 60,000 (breakfast) - 31,000 (worship)
 
                 // 3. Update dev-kien debt
                 if (debtsObj["dev-kien"]) {
                     debtsObj["dev-kien"].current = 403800; // 343,950 + 59,850
                 }
 
-                // 4. Append transaction
+                // 4. Append transactions
                 txsList.push({
                     id: 1785160000015,
                     date: "2026-07-29",
@@ -5541,6 +5546,24 @@
                     bank: "tcb_company",
                     amount: 399000,
                     note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)"
+                });
+                txsList.push({
+                    id: 1785160000016,
+                    date: "2026-07-29",
+                    type: "expense",
+                    category: "food",
+                    bank: "tcb",
+                    amount: 60000,
+                    note: "Tiền ăn sáng"
+                });
+                txsList.push({
+                    id: 1785160000017,
+                    date: "2026-07-29",
+                    type: "expense",
+                    category: "food",
+                    bank: "tcb",
+                    amount: 31000,
+                    note: "Tiền thờ cúng (đồ thắp hương)"
                 });
 
                 // 5. Update projects list to reflect schedule updates
@@ -5566,7 +5589,8 @@
                 localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
                 localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
                 
-                // Mark migration v16 and v15 as done
+                // Mark migration v17, v16, and v15 as done
+                localStorage.setItem('mercy_migration_20260729_v17', 'true');
                 localStorage.setItem('mercy_migration_20260729_v16', 'true');
                 localStorage.setItem('mercy_migration_20260729_v15', 'true');
             }
