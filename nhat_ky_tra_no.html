@@ -2420,7 +2420,7 @@
             vcb: { name: "Thẻ Tín Dụng VCB", initial: 20000000, current: 17674844, color: "var(--warning)", notes: "Dư nợ thẻ tín dụng VCB thực tế" },
             "old-loan": { name: "Khoản Vay Cũ 50M", initial: 50000000, current: 40100000, color: "var(--text-secondary)", notes: "Góp đợt 23/7 thành công" },
             "dev-hung": { name: "Nợ Dev Tín (Dự án anh Hưng)", initial: 5000000, current: 2000000, color: "var(--indigo)", notes: "Còn lại 2M chưa trả" },
-            "dev-kien": { name: "Nợ Dev Kiên (OnlyOffice)", initial: 224250, current: 343950, color: "var(--indigo)", notes: "15% hoa hồng cài đặt OnlyOffice cộng dồn" },
+            "dev-kien": { name: "Nợ Dev Kiên (OnlyOffice)", initial: 224250, current: 403800, color: "var(--indigo)", notes: "15% hoa hồng cài đặt OnlyOffice cộng dồn" },
             di: { name: "Khoản vay của Dì", initial: 50000000, current: 50000000, color: "var(--secondary)", notes: "Lãi suất 0%, chưa áp lực thời gian" }
         };
 
@@ -2429,7 +2429,7 @@
             tcb: 8022439,
             mbbank: 0,
             vcb: 89167,
-            tcb_company: 3183790
+            tcb_company: 3582790
         };
 
         // Initial Transactions (All 45 transactions fully recovered)
@@ -2481,7 +2481,8 @@
             { id: 1785160000011, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 788695, note: "Chi phí chạy Ads quảng cáo (VCB checking)" },
             { id: 1785160000012, date: "2026-07-27", type: "expense", category: "opportunity_cost", bank: "vcb", amount: 215722, note: "Chi phí Quảng cáo Ads (VCB credit card)" },
             { id: 1785160000013, date: "2026-07-28", type: "debt_repayment", targetDebt: "tcb", bank: "tcb", amount: 1369896, note: "Thanh toán gốc trả góp Techcombank tháng này (chủ động trừ)" },
-            { id: 1785160000014, date: "2026-07-28", type: "expense", category: "other", bank: "tcb", amount: 107665, note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)" }
+            { id: 1785160000014, date: "2026-07-28", type: "expense", category: "other", bank: "tcb", amount: 107665, note: "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)" },
+            { id: 1785160000015, date: "2026-07-29", type: "income", category: "outsource", bank: "tcb_company", amount: 399000, note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)" }
         ];
 
         // Core memory arrays loaded from localStorage
@@ -2831,6 +2832,9 @@
             
             // July 28 migration check
             checkJuly28Migration();
+            
+            // July 29 migration check
+            checkJuly29Migration();
             
             // Re-load variables after migration if it ran
             debts = JSON.parse(localStorage.getItem('mercy_debts_v22')) || debts;
@@ -5515,6 +5519,44 @@
                 localStorage.setItem('mercy_migration_20260728_v13', 'true');
                 localStorage.setItem('mercy_migration_20260728_v12', 'true');
                 localStorage.setItem('mercy_migration_20260728_v11', 'true');
+            }
+        }
+
+        // Migration for new OnlyOffice sale +399k tcb_company and nợ Kiên 15% (July 29, 2026) - v15
+        function checkJuly29Migration() {
+            if (!localStorage.getItem('mercy_migration_20260729_v15')) {
+                let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
+                let banksObj = JSON.parse(localStorage.getItem('mercy_banks_v21')) || {};
+                let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
+
+                // 1. Filter out to prevent duplicate runs
+                txsList = txsList.filter(t => t.id !== 1785160000015);
+
+                // 2. Update company balance
+                banksObj.tcb_company = 3582790; // 3,183,790 + 399,000
+
+                // 3. Update dev-kien debt
+                if (debtsObj["dev-kien"]) {
+                    debtsObj["dev-kien"].current = 403800; // 343,950 + 59,850
+                }
+
+                // 4. Append transaction
+                txsList.push({
+                    id: 1785160000015,
+                    date: "2026-07-29",
+                    type: "income",
+                    category: "outsource",
+                    bank: "tcb_company",
+                    amount: 399000,
+                    note: "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)"
+                });
+
+                localStorage.setItem('mercy_transactions_v22', JSON.stringify(txsList));
+                localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
+                localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
+                
+                // Mark migration v15 as done
+                localStorage.setItem('mercy_migration_20260729_v15', 'true');
             }
         }
 
