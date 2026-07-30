@@ -1,0 +1,921 @@
+{
+  "DEFAULT_DEBTS": {
+    "momo": {
+      "name": "Ví Trả Sau MoMo",
+      "initial": 5000000,
+      "current": 0,
+      "color": "var(--danger)",
+      "notes": "Đã xóa sổ hoàn toàn ngày 09/07"
+    },
+    "the-anh": {
+      "name": "Nợ anh Thế Anh",
+      "initial": 8000000,
+      "current": 0,
+      "color": "var(--secondary)",
+      "notes": "Đã dứt điểm ngày 19/07"
+    },
+    "tcb": {
+      "name": "Vay Techcombank",
+      "initial": 16000000,
+      "current": 5615104,
+      "color": "var(--indigo)",
+      "notes": "Đã quét nợ đợt 27/7 (Gốc 1.36M, Lãi 107k)"
+    },
+    "vcb": {
+      "name": "Thẻ Tín Dụng VCB",
+      "initial": 20000000,
+      "current": 17336677,
+      "color": "var(--warning)",
+      "notes": "Dư nợ thẻ tín dụng VCB thực tế"
+    },
+    "old-loan": {
+      "name": "Khoản Vay Cũ 50M",
+      "initial": 50000000,
+      "current": 40100000,
+      "color": "var(--text-secondary)",
+      "notes": "Góp đợt 23/7 thành công"
+    },
+    "dev-hung": {
+      "name": "Nợ Dev Tín (Dự án anh Hưng)",
+      "initial": 5000000,
+      "current": 2000000,
+      "color": "var(--indigo)",
+      "notes": "Còn lại 2M chưa trả"
+    },
+    "dev-kien": {
+      "name": "Nợ Dev Kiên (OnlyOffice)",
+      "initial": 224250,
+      "current": 403800,
+      "color": "var(--indigo)",
+      "notes": "15% hoa hồng cài đặt OnlyOffice cộng dồn"
+    },
+    "di": {
+      "name": "Khoản vay của Dì",
+      "initial": 50000000,
+      "current": 50000000,
+      "color": "var(--secondary)",
+      "notes": "Lãi suất 0%, chưa áp lực thời gian"
+    }
+  },
+  "DEFAULT_BANKS": {
+    "tcb": 7518439,
+    "mbbank": 0,
+    "vcb": 50000,
+    "tcb_company": 15022790,
+    "vcb_company": 798000
+  },
+  "DEFAULT_TRANSACTIONS": [
+    {
+      "id": 0,
+      "date": "2026-07-09",
+      "type": "income",
+      "category": "outsource",
+      "bank": "mbbank",
+      "amount": 26254800,
+      "note": "Doanh thu chị Hương GoldenFood gia hạn 1 năm"
+    },
+    {
+      "id": 1,
+      "date": "2026-07-09",
+      "type": "debt_repayment",
+      "targetDebt": "momo",
+      "bank": "mbbank",
+      "amount": 5176394,
+      "note": "Thanh toán dứt điểm ví MoMo"
+    },
+    {
+      "id": 2,
+      "date": "2026-07-09",
+      "type": "debt_repayment",
+      "targetDebt": "the-anh",
+      "bank": "mbbank",
+      "amount": 3000000,
+      "note": "Chuyển khoản Thế Anh đợt 1"
+    },
+    {
+      "id": 3,
+      "date": "2026-07-11",
+      "type": "income",
+      "category": "outsource",
+      "bank": "mbbank",
+      "amount": 2650000,
+      "note": "Thu nhập outsource phát sinh mới"
+    },
+    {
+      "id": 4,
+      "date": "2026-07-12",
+      "type": "income",
+      "category": "outsource",
+      "bank": "mbbank",
+      "amount": 15000000,
+      "note": "Thu nhập dự án anh Hưng"
+    },
+    {
+      "id": 5,
+      "date": "2026-07-12",
+      "type": "debt_repayment",
+      "targetDebt": "dev-hung",
+      "bank": "mbbank",
+      "amount": 3000000,
+      "note": "Trả trước dev đợt 1 (Dự án anh Hưng)"
+    },
+    {
+      "id": 6,
+      "date": "2026-07-12",
+      "type": "expense",
+      "category": "food",
+      "bank": "mbbank",
+      "amount": 139000,
+      "note": "Mua đồ thắp hương (dưa vàng, chuối, thuốc lá)"
+    },
+    {
+      "id": 7,
+      "date": "2026-07-13",
+      "type": "expense",
+      "category": "food",
+      "bank": "mbbank",
+      "amount": 116000,
+      "note": "Uống cafe với khách"
+    },
+    {
+      "id": 8,
+      "date": "2026-07-13",
+      "type": "expense",
+      "category": "other",
+      "bank": "mbbank",
+      "amount": 255000,
+      "note": "Gia hạn tài khoản CapCut (Tự động trừ)"
+    },
+    {
+      "id": 9,
+      "date": "2026-07-13",
+      "type": "income",
+      "category": "outsource",
+      "bank": "tcb_company",
+      "amount": 7450000,
+      "note": "Bán 50 key Only Office tối ưu - Đại lý Hiền Hòa"
+    },
+    {
+      "id": 10,
+      "date": "2026-07-13",
+      "type": "expense",
+      "category": "food",
+      "bank": "mbbank",
+      "amount": 31000,
+      "note": "Mua nước lọc 5L"
+    },
+    {
+      "id": 11,
+      "date": "2026-07-19",
+      "type": "debt_repayment",
+      "targetDebt": "the-anh",
+      "bank": "mbbank",
+      "amount": 5000000,
+      "note": "Thanh toán nợ Thế Anh đợt 2 (Dứt điểm)"
+    },
+    {
+      "id": 12,
+      "date": "2026-07-20",
+      "type": "transfer",
+      "bank": "mbbank",
+      "targetBank": "tcb",
+      "amount": 16459000,
+      "note": "Chuyển toàn bộ tiền mặt sang Techcombank"
+    },
+    {
+      "id": 13,
+      "date": "2026-07-20",
+      "type": "transfer",
+      "bank": "tcb_company",
+      "targetBank": "tcb",
+      "amount": 7805000,
+      "note": "Chuyển quỹ công ty về tài khoản cá nhân"
+    },
+    {
+      "id": 14,
+      "date": "2026-07-20",
+      "type": "expense",
+      "category": "other",
+      "bank": "tcb",
+      "amount": 272165,
+      "note": "Đồng bộ số dư thực tế (Lệch số liệu)"
+    },
+    {
+      "id": 15,
+      "date": "2026-07-21",
+      "type": "expense",
+      "category": "other",
+      "bank": "tcb",
+      "amount": 6400000,
+      "note": "Thanh toán học phí Học kỳ 6 (QTKD)"
+    },
+    {
+      "id": 16,
+      "date": "2026-07-22",
+      "type": "debt_repayment",
+      "targetDebt": "old-loan",
+      "bank": "tcb",
+      "amount": 2900000,
+      "note": "Thanh toán đợt trả góp khoản vay cũ 50M (Hạn 23/7)"
+    },
+    {
+      "id": 17,
+      "date": "2026-07-22",
+      "type": "debt_repayment",
+      "targetDebt": "vcb",
+      "bank": "tcb",
+      "amount": 2913820,
+      "note": "Thanh toán khoản tối thiểu thẻ tín dụng VCB"
+    },
+    {
+      "id": 18,
+      "date": "2026-07-23",
+      "type": "income",
+      "category": "outsource",
+      "bank": "tcb_company",
+      "amount": 798000,
+      "note": "Bán 2 đơn hàng mới (2 x 399k)"
+    },
+    {
+      "id": 19,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 146000,
+      "note": "Tiền ăn uống (146k)"
+    },
+    {
+      "id": 20,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 114000,
+      "note": "Tiền ăn uống (114k)"
+    },
+    {
+      "id": 21,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 35000,
+      "note": "Tiền ăn uống (35k)"
+    },
+    {
+      "id": 22,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 65000,
+      "note": "Tiền ăn uống (65k hôm qua)"
+    },
+    {
+      "id": 23,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 40000,
+      "note": "Tiền đi chợ (40k hôm qua)"
+    },
+    {
+      "id": 24,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "other",
+      "bank": "tcb",
+      "amount": 100000,
+      "note": "Tiền đổ xăng"
+    },
+    {
+      "id": 25,
+      "date": "2026-07-23",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "tcb",
+      "amount": 851668,
+      "note": "Chi phí chạy Ads quảng cáo (Tự động cân bằng số dư)"
+    },
+    {
+      "id": 26,
+      "date": "2026-07-24",
+      "type": "income",
+      "category": "outsource",
+      "bank": "tcb_company",
+      "amount": 1495000,
+      "note": "Doanh thu bán OnlyOffice cho khách (Chưa trừ 15% dev)"
+    },
+    {
+      "id": 27,
+      "date": "2026-07-24",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "vcb",
+      "amount": 167640,
+      "note": "Thanh toán Quảng cáo Ads (6.6 USD ~ 167.640đ)"
+    },
+    {
+      "id": 28,
+      "date": "2026-07-25",
+      "type": "expense",
+      "category": "other",
+      "bank": "tcb",
+      "amount": 8974416,
+      "note": "Thanh toán Mua VPS SSD 7 (1 năm) - CT CP VIETNIX"
+    },
+    {
+      "id": 29,
+      "date": "2026-07-25",
+      "type": "expense",
+      "category": "food",
+      "bank": "vcb",
+      "amount": 60000,
+      "note": "Tiền ăn uống (60k Vietcombank)"
+    },
+    {
+      "id": 30,
+      "date": "2026-07-25",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 55000,
+      "note": "Tiền ăn uống (55k)"
+    },
+    {
+      "id": 31,
+      "date": "2026-07-25",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 44000,
+      "note": "Tiền ăn uống (44k)"
+    },
+    {
+      "id": 32,
+      "date": "2026-07-25",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "vcb",
+      "amount": 625571,
+      "note": "Chi phí Quảng cáo Ads (Tự động cân bằng số dư VCB)"
+    },
+    {
+      "id": 1785160000001,
+      "date": "2026-07-26",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 160000,
+      "note": "Mua đồ thắp hương (trái cây thắp nhang)"
+    },
+    {
+      "id": 1785160000002,
+      "date": "2026-07-26",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 20000,
+      "note": "Tiền ăn bánh mì"
+    },
+    {
+      "id": 1785160000003,
+      "date": "2026-07-26",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 20000,
+      "note": "Tiền mua nước giải khát"
+    },
+    {
+      "id": 1785160000004,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 5000,
+      "note": "Tiền ăn tối"
+    },
+    {
+      "id": 1785160000005,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 25000,
+      "note": "Tiền sinh tố sapoche"
+    },
+    {
+      "id": 1785160000006,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "tcb",
+      "amount": 70000,
+      "note": "Gửi giấy tờ dự án OnlyOffice bằng tk tech cá nhân"
+    },
+    {
+      "id": 1785160000007,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "tcb",
+      "amount": 33000,
+      "note": "Gửi đồ cho KOL Hiếu Lê"
+    },
+    {
+      "id": 1785160000008,
+      "date": "2026-07-27",
+      "type": "income",
+      "category": "outsource",
+      "bank": "tcb_company",
+      "amount": 798000,
+      "note": "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 119.7k)"
+    },
+    {
+      "id": 1785160000009,
+      "date": "2026-07-27",
+      "type": "transfer",
+      "bank": "tcb",
+      "targetBank": "vcb",
+      "amount": 1093584,
+      "note": "Chuyển tiền sang Vietcombank"
+    },
+    {
+      "id": 1785160000011,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "vcb",
+      "amount": 788695,
+      "note": "Chi phí chạy Ads quảng cáo (VCB checking)"
+    },
+    {
+      "id": 1785160000012,
+      "date": "2026-07-27",
+      "type": "expense",
+      "category": "opportunity_cost",
+      "bank": "vcb",
+      "amount": 215722,
+      "note": "Chi phí Quảng cáo Ads (VCB credit card)"
+    },
+    {
+      "id": 1785160000013,
+      "date": "2026-07-28",
+      "type": "debt_repayment",
+      "targetDebt": "tcb",
+      "bank": "tcb",
+      "amount": 1369896,
+      "note": "Thanh toán gốc trả góp Techcombank tháng này (chủ động trừ)"
+    },
+    {
+      "id": 1785160000014,
+      "date": "2026-07-28",
+      "type": "expense",
+      "category": "other",
+      "bank": "tcb",
+      "amount": 107665,
+      "note": "Thanh toán lãi trả góp Techcombank tháng này (chủ động trừ)"
+    },
+    {
+      "id": 1785160000015,
+      "date": "2026-07-29",
+      "type": "income",
+      "category": "outsource",
+      "bank": "tcb_company",
+      "amount": 399000,
+      "note": "Thu nhập cài OnlyOffice (nợ Kiên 15% ~ 59.85k)"
+    },
+    {
+      "id": 1785160000016,
+      "date": "2026-07-29",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 60000,
+      "note": "Tiền ăn sáng"
+    },
+    {
+      "id": 1785160000017,
+      "date": "2026-07-29",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 31000,
+      "note": "Tiền thờ cúng (đồ thắp hương)"
+    },
+    {
+      "id": 1785160000018,
+      "date": "2026-07-29",
+      "type": "income",
+      "category": "outsource",
+      "bank": "vcb",
+      "amount": 299000,
+      "note": "Thu nhập cài OnlyOffice (nợ Kiên 100k công cài + xăng)"
+    },
+    {
+      "id": 1785160000019,
+      "date": "2026-07-29",
+      "type": "debt_repayment",
+      "targetDebt": "dev-kien",
+      "bank": "tcb",
+      "amount": 100000,
+      "note": "Thanh toán công cài máy + xăng xe cho Kiên"
+    },
+    {
+      "id": 1785160000020,
+      "date": "2026-07-30",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 160000,
+      "note": "Chi ăn tối"
+    },
+    {
+      "id": 1785160000021,
+      "date": "2026-07-30",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 118000,
+      "note": "Chi ăn khuya"
+    },
+    {
+      "id": 1785160000022,
+      "date": "2026-07-30",
+      "type": "expense",
+      "category": "food",
+      "bank": "tcb",
+      "amount": 35000,
+      "note": "Chi ăn hủ tiếu bò kho"
+    },
+    {
+      "id": 1785160000023,
+      "date": "2026-07-30",
+      "type": "debt_repayment",
+      "targetDebt": "vcb",
+      "bank": "vcb",
+      "amount": 338167,
+      "note": "Tự động quét nợ thẻ tín dụng Vietcombank"
+    },
+    {
+      "id": 1785160000024,
+      "date": "2026-07-30",
+      "type": "income",
+      "category": "income",
+      "bank": "tcb_company",
+      "amount": 798000,
+      "note": "Thu bán OnlyOffice vào TCB Công ty"
+    },
+    {
+      "id": 1785160000025,
+      "date": "2026-07-30",
+      "type": "income",
+      "category": "income",
+      "bank": "tcb_company",
+      "amount": 798000,
+      "note": "Thu bán OnlyOffice vào TCB Công ty (đơn 2)"
+    },
+    {
+      "id": 1785160000026,
+      "date": "2026-07-30",
+      "type": "income",
+      "category": "income",
+      "bank": "tcb_company",
+      "amount": 2394000,
+      "note": "Thu bán OnlyOffice vào TCB Công ty (đơn 3)"
+    },
+    {
+      "id": 1785160000027,
+      "date": "2026-07-30",
+      "type": "income",
+      "category": "income",
+      "bank": "tcb_company",
+      "amount": 7450000,
+      "note": "Thu bán 50 key OnlyOffice cho đại lý vào TCB Công ty"
+    },
+    {
+      "id": 1785160000028,
+      "date": "2026-07-30",
+      "type": "income",
+      "category": "income",
+      "bank": "vcb_company",
+      "amount": 798000,
+      "note": "Thu cài đặt OnlyOffice vào VCB Công ty"
+    }
+  ],
+  "DEFAULT_PROJECTS": [
+    {
+      "id": 0,
+      "name": "Kỷ luật Content & Seeding Hằng ngày",
+      "revenue": 0,
+      "bank": "tcb_company",
+      "category": "daily",
+      "streak": 5,
+      "collected": false,
+      "tasks": [
+        {
+          "id": 1,
+          "text": "[19:30 - 20:00] Edit & Đăng 1 video PodcastSGK",
+          "done": false
+        },
+        {
+          "id": 2,
+          "text": "[20:00 - 21:00] Kịch bản & Edit 1 video Vy Thiên Hùng",
+          "done": false
+        },
+        {
+          "id": 3,
+          "text": "[Khi Sơn gửi] Seeding bài viết vào các hội nhóm",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Vận hành & Bán hàng OnlyOffice",
+      "revenue": 0,
+      "bank": "tcb_company",
+      "category": "daily",
+      "streak": 5,
+      "collected": false,
+      "tasks": [
+        {
+          "id": 100,
+          "text": "[08:30 - 12:00] Rep Lead Ads OnlyOffice đợt 1 (Vắng Lead → Follow-up tệp cũ)",
+          "done": true
+        },
+        {
+          "id": 101,
+          "text": "[13:30 - 15:00] Rep Lead Ads OnlyOffice đợt 2: Phân loại, xin SĐT & tư vấn",
+          "done": true
+        },
+        {
+          "id": 102,
+          "text": "[13:30 - 15:00] Làm bài đăng / Content Fanpage OnlyOffice kéo Lead tự nhiên",
+          "done": true
+        },
+        {
+          "id": 103,
+          "text": "[15:00 - 16:30] Follow-up / Spam chăm sóc tệp khách dồn Ngày 2 & Ngày 3",
+          "done": true
+        },
+        {
+          "id": 104,
+          "text": "[15:00 - 16:30] Phối hợp Dev Kiên: Làm đẹp Web & tối ưu Tự động làm Hợp đồng",
+          "done": false
+        },
+        {
+          "id": 105,
+          "text": "[17:00 & 21:45] 🧾 Xuất hóa đơn VAT & Ký hợp đồng tự động khi khách chốt",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Kính Thông Minh Mercy (Quản trị CEO & Đại lý)",
+      "revenue": 0,
+      "bank": "tcb_company",
+      "category": "daily",
+      "streak": 1,
+      "collected": false,
+      "tasks": [
+        {
+          "id": 601,
+          "text": "[16:30 - 17:00] Bắt Mạnh gửi Báo cáo 5 phút (Doanh thu, Đơn đi, Lead chốt, Đại lý mới)",
+          "done": false
+        },
+        {
+          "id": 602,
+          "text": "[16:30 - 17:00] Đánh giá KPI ngày của Mạnh & chỉ đạo xử lý vấn đề tồn đọng",
+          "done": false
+        },
+        {
+          "id": 603,
+          "text": "[19:30 - 20:30] Tìm kiếm & liên hệ kênh Đại lý B2B bán Kính Thông Minh Mercy (Trống → Học tập / Tối ưu Ads)",
+          "done": false
+        },
+        {
+          "id": 604,
+          "text": "[Thứ 2 hàng tuần] Họp duyệt Target Doanh thu tuần & Chiết khấu Đại lý Mercy",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "OnlyOffice / Mercy Tilium (Demo & Bản quyền)",
+      "revenue": 15000000,
+      "bank": "mbbank",
+      "category": "outsource",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 1101,
+          "text": "Gửi báo giá & Demo tính năng bản quyền",
+          "done": true
+        },
+        {
+          "id": 1102,
+          "text": "Họp chốt điều khoản hợp đồng doanh nghiệp",
+          "done": false
+        },
+        {
+          "id": 1103,
+          "text": "Bàn giao key bản quyền & nghiệm thu thanh toán",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Outsource Website (Nâng cấp Hệ thống Đối tác)",
+      "revenue": 8500000,
+      "bank": "tcb_company",
+      "category": "outsource",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 201,
+          "text": "Nhận yêu cầu & lên mockup giao diện mới",
+          "done": true
+        },
+        {
+          "id": 202,
+          "text": "Gửi thiết kế demo & báo giá chi tiết",
+          "done": true
+        },
+        {
+          "id": 203,
+          "text": "Coding hoàn thiện tính năng & Deploy sản phẩm",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Campaign Ads Mercy Tech (Tệp Lead CEO)",
+      "revenue": 10000000,
+      "bank": "mbbank",
+      "category": "campaign",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 1201,
+          "text": "Setup chiến dịch ads phễu FB/Google tối ưu",
+          "done": true
+        },
+        {
+          "id": 1202,
+          "text": "Thu thập & Chăm sóc đạt KPI 100 Lead CEO nóng",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Dự án ViVA",
+      "revenue": 10000000,
+      "bank": "tcb_company",
+      "category": "outsource",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 301,
+          "text": "[20:30 - 21:30] Phối hợp BA với Sơn & hối Dev đẩy lịch họp demo ViVA",
+          "done": true
+        },
+        {
+          "id": 302,
+          "text": "[Khi khách rep] Chuẩn bị file đề xuất & tham gia họp chốt yêu cầu ViVA",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Dự án Trà Tâm Đạo",
+      "revenue": 0,
+      "bank": "mbbank",
+      "category": "outsource",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 401,
+          "text": "[20:30 - 21:30] Phối hợp BA với Sơn & chốt khung nhận diện Trà Tâm Đạo",
+          "done": true
+        },
+        {
+          "id": 402,
+          "text": "[Khi khách rep] Đôn đốc Dev dựng demo & gửi đối tác Trà Tâm Đạo",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Second Brain — Nha Khoa MyAuris",
+      "revenue": 74000000,
+      "bank": "tcb_company",
+      "category": "outsource",
+      "collected": false,
+      "tasks": [
+        {
+          "id": 501,
+          "text": "[20:30 - 21:30] Phối hợp BA với Sơn & khảo sát nhu cầu Nha khoa MyAuris",
+          "done": true
+        },
+        {
+          "id": 502,
+          "text": "[Khi khách rep] Chuẩn bị file chốt NDA & Proposal kỹ thuật MyAuris",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "uac",
+      "name": "UAC (OnlyOffice 10 máy)",
+      "revenue": 2990000,
+      "bank": "tcb_company",
+      "category": "outsource",
+      "collected": false,
+      "commissionPct": 15,
+      "commissionName": "Kiên",
+      "tasks": [
+        {
+          "id": 701,
+          "text": "Cài đặt OnlyOffice cho UAC",
+          "done": false
+        },
+        {
+          "id": 702,
+          "text": "Bàn giao key & Nghiệm thu thanh toán",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "roxy",
+      "name": "Roxy (OnlyOffice 10 máy)",
+      "revenue": 2990000,
+      "bank": "tcb_company",
+      "category": "outsource",
+      "collected": false,
+      "commissionPct": 15,
+      "commissionName": "Kiên",
+      "tasks": [
+        {
+          "id": 801,
+          "text": "Cài đặt OnlyOffice cho Roxy",
+          "done": false
+        },
+        {
+          "id": 802,
+          "text": "Bàn giao key & Nghiệm thu thanh toán",
+          "done": false
+        }
+      ]
+    }
+  ],
+  "DEFAULT_RECEIVABLES": [
+    {
+      "id": "uac",
+      "name": "UAC (OnlyOffice 10 máy)",
+      "amount": 2990000,
+      "commissionPct": 15,
+      "commissionName": "Kiên",
+      "commissionPaid": false,
+      "status": "pending"
+    },
+    {
+      "id": "roxy",
+      "name": "Roxy (OnlyOffice 10 máy)",
+      "amount": 2990000,
+      "commissionPct": 15,
+      "commissionName": "Kiên",
+      "commissionPaid": false,
+      "status": "pending"
+    },
+    {
+      "id": "phuong-linh-399",
+      "name": "Phương Linh 399 (OnlyOffice 50 key)",
+      "amount": 7450000,
+      "commissionPct": 0,
+      "commissionName": "",
+      "commissionPaid": false,
+      "status": "pending"
+    },
+    {
+      "id": "tin-hoc-gia-hung",
+      "name": "Tin Học Gia Hưng (OnlyOffice 50 key)",
+      "amount": 7450000,
+      "commissionPct": 0,
+      "commissionName": "",
+      "commissionPaid": false,
+      "status": "pending"
+    }
+  ]
+}

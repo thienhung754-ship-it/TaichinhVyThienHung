@@ -1954,6 +1954,10 @@
                             <div class="bank-name"><i data-lucide="briefcase" style="width: 14px; height: 14px;"></i> TCB Quỹ Cty</div>
                             <div class="bank-balance" id="bank-tcb-company">0 đ</div>
                         </div>
+                        <div class="bank-widget" style="border-left: 3px solid #30d158;">
+                            <div class="bank-name"><i data-lucide="wallet" style="width: 14px; height: 14px;"></i> VCB Quỹ Cty</div>
+                            <div class="bank-balance" id="bank-vcb-company">0 đ</div>
+                        </div>
                     </div>
 
                     <!-- Input Form -->
@@ -1977,6 +1981,7 @@
                                 <option value="mbbank">MB Bank (Chính)</option>
                                 <option value="vcb">Vietcombank</option>
                                 <option value="tcb_company">TCB Công ty (MERCY)</option>
+                                <option value="vcb_company">VCB Công ty (MERCY)</option>
                             </select>
                         </div>
                         <div class="form-group" id="field-category-container">
@@ -2417,7 +2422,8 @@
             tcb: 7831439,
             mbbank: 0,
             vcb: 388167,
-            tcb_company: 3582790
+            tcb_company: 3582790,
+            vcb_company: 0
         };
 
         // Initial Transactions (All 45 transactions fully recovered)
@@ -2828,6 +2834,9 @@
             // July 29 migration check
             checkJuly29Migration();
             
+            // July 30 migration check
+            checkJuly30Migration();
+            
             // Re-load variables after migration if it ran
             debts = JSON.parse(localStorage.getItem('mercy_debts_v22')) || debts;
             banks = JSON.parse(localStorage.getItem('mercy_banks_v21')) || banks;
@@ -3166,7 +3175,7 @@
             const totalPaidSinceInception = INCEPTION_TOTAL_DEBT - totalRemaining;
 
             // Calculate total active cash flow (MB + TCB + VCB + TCB Cty)
-            const totalCash = (banks.mbbank || 0) + (banks.tcb || 0) + (banks.vcb || 0) + (banks.tcb_company || 0);
+            const totalCash = (banks.mbbank || 0) + (banks.tcb || 0) + (banks.vcb || 0) + (banks.tcb_company || 0) + (banks.vcb_company || 0);
 
             // Filter transactions dynamically
             const filterVal = currentFilterVal;
@@ -3431,6 +3440,10 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; white-space: nowrap; gap: 0.5rem;">
                             <span>&bull; TCB Company:</span>
                             <span style="font-weight: 600; color: #30d158;">${formatVND(banks.tcb_company || 0)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; white-space: nowrap; gap: 0.5rem;">
+                            <span>&bull; VCB Company:</span>
+                            <span style="font-weight: 600; color: #30d158;">${formatVND(banks.vcb_company || 0)}</span>
                         </div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-color); padding-top: 0.4rem; margin-top: 0.4rem; font-weight: 700; white-space: nowrap;">
@@ -3789,6 +3802,7 @@
             document.getElementById('bank-tcb').textContent = formatVND(banks.tcb || 0);
             document.getElementById('bank-vcb').textContent = formatVND(banks.vcb || 0);
             document.getElementById('bank-tcb-company').textContent = formatVND(banks.tcb_company || 0);
+            document.getElementById('bank-vcb-company').textContent = formatVND(banks.vcb_company || 0);
 
             // July Specific Budget Widget calculations
             const hasPaidOldLoan = transactions.some(t => t.type === 'debt_repayment' && t.targetDebt === 'old-loan' && t.date.startsWith('2026-07'));
@@ -4183,7 +4197,7 @@
             const BASE_DAILY_RATE = 6353835; // base rate to hit Dec 31 goal
 
             // Calculate total active cash flow
-            const totalCash = (banks.mbbank || 0) + (banks.tcb || 0) + (banks.vcb || 0) + (banks.tcb_company || 0);
+            const totalCash = (banks.mbbank || 0) + (banks.tcb || 0) + (banks.vcb || 0) + (banks.tcb_company || 0) + (banks.vcb_company || 0);
 
             // Determine dynamic remaining outflows per month (base outflows + remaining living budget)
             const getRemainingOutflows = (m) => {
@@ -4587,6 +4601,8 @@
                 bank = 'tcb_company';
             } else if (cleanText.includes('tcb') || cleanText.includes('tech') || cleanText.includes('techcom')) {
                 bank = 'tcb';
+            } else if (cleanText.includes('vcb cty') || cleanText.includes('vcb công ty') || cleanText.includes('vcb company') || cleanText.includes('vcb_company')) {
+                bank = 'vcb_company';
             } else if (cleanText.includes('vcb') || cleanText.includes('vietcom')) {
                 bank = 'vcb';
             } else if (cleanText.includes('mb') || cleanText.includes('mbbank')) {
@@ -4652,7 +4668,7 @@
                 noteText = noteText.replace(rawAmountMatch[0], '');
             }
             noteText = noteText.replace(/^(chi|tiêu|mua|thu|nhận|kiếm|trả|góp|nợ)\s+/i, '');
-            noteText = noteText.replace(/\s+(từ|vào|qua|tài khoản)?\s*(mbbank|mb|tcb company|tcb cty|tcb_company|tcb|techcombank|vcb|vietcombank)/i, '');
+            noteText = noteText.replace(/\s+(từ|vào|qua|tài khoản)?\s*(mbbank|mb|tcb company|tcb cty|tcb_company|tcb|techcombank|vcb company|vcb cty|vcb công ty|vcb_company|vcb|vietcombank)/i, '');
             if (type === 'debt_repayment') {
                 noteText = noteText.replace(/\s+(cho|cho bên)?\s*(momo|thế anh|the anh|tcb|techcombank|vcb|vietcombank|vay cũ|vay cu|dev hưng|dev|dì|di)/i, '');
             }
@@ -4956,7 +4972,9 @@
             const bankName = proj.bank === 'mbbank' ? 'MB Bank' 
                            : proj.bank === 'tcb' ? 'Techcombank' 
                            : proj.bank === 'vcb' ? 'Vietcombank' 
-                           : 'TCB Công ty';
+                           : proj.bank === 'tcb_company' ? 'TCB Công ty'
+                           : proj.bank === 'vcb_company' ? 'VCB Công ty'
+                           : 'Ngân hàng khác';
 
             if (confirm(`Xác nhận thu tiền dự án "${proj.name}"?\nSố tiền: ${formatVND(proj.revenue)}\nNhận vào tài khoản: ${bankName}`)) {
                 // 1. Log Income Transaction
@@ -5059,7 +5077,9 @@
                 const bankLabel = p.bank === 'mbbank' ? 'MB' 
                                 : p.bank === 'tcb' ? 'TCB' 
                                 : p.bank === 'vcb' ? 'VCB' 
-                                : 'TCB Cty';
+                                : p.bank === 'tcb_company' ? 'TCB Cty'
+                                : p.bank === 'vcb_company' ? 'VCB Cty'
+                                : 'Khác';
 
                 const cat = p.category || 'outsource';
                 let accentColor = '#bf5af2';
@@ -5623,6 +5643,145 @@
             }
         }
 
+        // Migration for July 30, 2026 transactions, debts and receivables - v20
+        function checkJuly30Migration() {
+            if (!localStorage.getItem('mercy_migration_20260730_v20')) {
+                let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
+                let banksObj = JSON.parse(localStorage.getItem('mercy_banks_v21')) || {};
+                let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
+                let receivables = JSON.parse(localStorage.getItem('mercy_receivables_v22')) || [];
+
+                // 1. Filter out to prevent duplicate runs
+                txsList = txsList.filter(t => t.id < 1785160000020 || t.id > 1785160000028);
+
+                // 2. Update bank balances
+                banksObj.tcb = 7518439; // 7,831,439 - 160,000 - 118,000 - 35,000
+                banksObj.vcb = 50000; // 388,167 - 338,167
+                banksObj.tcb_company = 15022790; // 3,582,790 + 798,000 + 798,000 + 2,394,000 + 7,450,000
+                banksObj.vcb_company = 798000; // 0 + 798,000
+
+                // 3. Update VCB credit card debt
+                if (debtsObj.vcb) {
+                    debtsObj.vcb.current = 17336677; // 17,674,844 - 338,167
+                }
+
+                // 4. Append transactions
+                txsList.push({
+                    id: 1785160000020,
+                    date: "2026-07-30",
+                    type: "expense",
+                    category: "food",
+                    bank: "tcb",
+                    amount: 160000,
+                    note: "Chi ăn tối"
+                });
+                txsList.push({
+                    id: 1785160000021,
+                    date: "2026-07-30",
+                    type: "expense",
+                    category: "food",
+                    bank: "tcb",
+                    amount: 118000,
+                    note: "Chi ăn khuya"
+                });
+                txsList.push({
+                    id: 1785160000022,
+                    date: "2026-07-30",
+                    type: "expense",
+                    category: "food",
+                    bank: "tcb",
+                    amount: 35000,
+                    note: "Chi ăn hủ tiếu bò kho"
+                });
+                txsList.push({
+                    id: 1785160000023,
+                    date: "2026-07-30",
+                    type: "debt_repayment",
+                    targetDebt: "vcb",
+                    bank: "vcb",
+                    amount: 338167,
+                    note: "Tự động quét nợ thẻ tín dụng Vietcombank"
+                });
+                txsList.push({
+                    id: 1785160000024,
+                    date: "2026-07-30",
+                    type: "income",
+                    category: "income",
+                    bank: "tcb_company",
+                    amount: 798000,
+                    note: "Thu bán OnlyOffice vào TCB Công ty"
+                });
+                txsList.push({
+                    id: 1785160000025,
+                    date: "2026-07-30",
+                    type: "income",
+                    category: "income",
+                    bank: "tcb_company",
+                    amount: 798000,
+                    note: "Thu bán OnlyOffice vào TCB Công ty (đơn 2)"
+                });
+                txsList.push({
+                    id: 1785160000026,
+                    date: "2026-07-30",
+                    type: "income",
+                    category: "income",
+                    bank: "tcb_company",
+                    amount: 2394000,
+                    note: "Thu bán OnlyOffice vào TCB Công ty (đơn 3)"
+                });
+                txsList.push({
+                    id: 1785160000027,
+                    date: "2026-07-30",
+                    type: "income",
+                    category: "income",
+                    bank: "tcb_company",
+                    amount: 7450000,
+                    note: "Thu bán 50 key OnlyOffice cho đại lý vào TCB Công ty"
+                });
+                txsList.push({
+                    id: 1785160000028,
+                    date: "2026-07-30",
+                    type: "income",
+                    category: "income",
+                    bank: "vcb_company",
+                    amount: 798000,
+                    note: "Thu cài đặt OnlyOffice vào VCB Công ty"
+                });
+
+                // 5. Append new receivables
+                if (!receivables.find(x => x.id === 'phuong-linh-399')) {
+                    receivables.push({
+                        id: 'phuong-linh-399',
+                        name: 'Phương Linh 399 (OnlyOffice 50 key)',
+                        amount: 7450000,
+                        commissionPct: 0,
+                        commissionName: '',
+                        commissionPaid: false,
+                        status: 'pending'
+                    });
+                }
+                if (!receivables.find(x => x.id === 'tin-hoc-gia-hung')) {
+                    receivables.push({
+                        id: 'tin-hoc-gia-hung',
+                        name: 'Tin Học Gia Hưng (OnlyOffice 50 key)',
+                        amount: 7450000,
+                        commissionPct: 0,
+                        commissionName: '',
+                        commissionPaid: false,
+                        status: 'pending'
+                    });
+                }
+
+                localStorage.setItem('mercy_transactions_v22', JSON.stringify(txsList));
+                localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
+                localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
+                localStorage.setItem('mercy_receivables_v22', JSON.stringify(receivables));
+                
+                // Mark migration v20 as done
+                localStorage.setItem('mercy_migration_20260730_v20', 'true');
+            }
+        }
+
         function renderReceivables() {
             let receivables = JSON.parse(localStorage.getItem('mercy_receivables_v22')) || [];
             const container = document.getElementById('receivables-list-container');
@@ -5655,7 +5814,7 @@
                     </div>
                     <div class="debt-details" style="margin-top: 0.4rem; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 0.5rem; flex-wrap: wrap;">
                         <span style="font-size: 0.72rem; color: var(--text-secondary);">
-                            Trích ${r.commissionPct}% cho ${r.commissionName}: <strong style="color: #bf5af2;">${formatVND(kienCommission)}</strong> 
+                            Trích ${r.commissionPct}% cho ${r.commissionName || 'Kiên'}: <strong style="color: #bf5af2;">${formatVND(kienCommission)}</strong> 
                             ${isPaid ? '<span style="color: #30d158;">(Đã cộng nợ)</span>' : '<span style="color: #ff9f0a; font-style: italic;">(Đợi thu hồi)</span>'}
                         </span>
                         ${!isPaid ? `
@@ -5672,7 +5831,6 @@
                 totalHeader.textContent = formatVND(totalAmount);
             }
         }
-
         window.collectReceivable = function(id) {
             if (!confirm('Xác nhận đã thu hồi khoản công nợ này? Giao dịch thu nhập sẽ tự động được ghi nhận.')) return;
             
@@ -5683,6 +5841,12 @@
             r.status = 'paid';
             
             const todayStr = new Date().toISOString().slice(0, 10);
+            let noteStr = "Thu hồi công nợ OnlyOffice - " + r.name;
+            const commission = r.commissionPct ? Math.round(r.amount * (r.commissionPct / 100)) : 0;
+            if (commission > 0) {
+                noteStr += " (nợ " + (r.commissionName || 'Kiên') + " " + r.commissionPct + "% ~ " + Math.round(commission / 1000) + "k)";
+            }
+
             const newTx = {
                 id: Date.now(),
                 date: todayStr,
@@ -5690,7 +5854,7 @@
                 amount: r.amount,
                 bank: 'tcb_company',
                 category: 'income',
-                note: `Thu hồi công nợ OnlyOffice - \${r.name.includes('UAC') ? 'UAC' : 'Roxy'} (nợ Kiên 15% ~ \${Math.round(r.amount * 0.15 / 1000)}k)`
+                note: noteStr
             };
             
             let txsList = JSON.parse(localStorage.getItem('mercy_transactions_v22')) || [];
@@ -5702,8 +5866,7 @@
             localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));
             
             let debtsObj = JSON.parse(localStorage.getItem('mercy_debts_v22')) || {};
-            const commission = Math.round(r.amount * (r.commissionPct / 100));
-            if (debtsObj['dev-kien']) {
+            if (commission > 0 && debtsObj['dev-kien']) {
                 debtsObj['dev-kien'].current = (debtsObj['dev-kien'].current || 0) + commission;
             }
             localStorage.setItem('mercy_debts_v22', JSON.stringify(debtsObj));
@@ -5974,6 +6137,7 @@
                             <option value="tcb">Techcombank (Khóa)</option>
                             <option value="vcb">Vietcombank</option>
                             <option value="tcb_company">TCB Công ty (MERCY)</option>
+                            <option value="vcb_company">VCB Công ty (MERCY)</option>
                         </select>
                     </div>
                 </div>
