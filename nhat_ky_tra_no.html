@@ -5771,6 +5771,17 @@
                         status: 'pending'
                     });
                 }
+                if (!receivables.find(x => x.id === 'y-duoc-ha-noi')) {
+                    receivables.push({
+                        id: 'y-duoc-ha-noi',
+                        name: 'Y dược Hà Nội (Cài OnlyOffice)',
+                        amount: 399000,
+                        commissionPct: 0,
+                        commissionName: '',
+                        commissionPaid: false,
+                        status: 'pending'
+                    });
+                }
 
                 localStorage.setItem('mercy_transactions_v22', JSON.stringify(txsList));
                 localStorage.setItem('mercy_banks_v21', JSON.stringify(banksObj));

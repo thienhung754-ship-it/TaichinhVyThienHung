@@ -916,6 +916,15 @@
       "commissionName": "",
       "commissionPaid": false,
       "status": "pending"
+    },
+    {
+      "id": "y-duoc-ha-noi",
+      "name": "Y dược Hà Nội (Cài OnlyOffice)",
+      "amount": 399000,
+      "commissionPct": 0,
+      "commissionName": "",
+      "commissionPaid": false,
+      "status": "pending"
     }
   ]
 }
