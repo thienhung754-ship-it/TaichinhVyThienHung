@@ -2837,6 +2837,9 @@
             // July 30 migration check
             checkJuly30Migration();
             
+            // July 30 migration check part 2 (Y dược Hà Nội)
+            checkJuly30MigrationV21();
+            
             // Re-load variables after migration if it ran
             debts = JSON.parse(localStorage.getItem('mercy_debts_v22')) || debts;
             banks = JSON.parse(localStorage.getItem('mercy_banks_v21')) || banks;
@@ -5790,6 +5793,26 @@
                 
                 // Mark migration v20 as done
                 localStorage.setItem('mercy_migration_20260730_v20', 'true');
+            }
+        }
+
+        // Migration for July 30, 2026 part 2 (Y dược Hà Nội) - v21
+        function checkJuly30MigrationV21() {
+            if (!localStorage.getItem('mercy_migration_20260730_v21')) {
+                let receivables = JSON.parse(localStorage.getItem('mercy_receivables_v22')) || [];
+                if (!receivables.find(x => x.id === 'y-duoc-ha-noi')) {
+                    receivables.push({
+                        id: 'y-duoc-ha-noi',
+                        name: 'Y dược Hà Nội (Cài OnlyOffice)',
+                        amount: 399000,
+                        commissionPct: 0,
+                        commissionName: '',
+                        commissionPaid: false,
+                        status: 'pending'
+                    });
+                    localStorage.setItem('mercy_receivables_v22', JSON.stringify(receivables));
+                }
+                localStorage.setItem('mercy_migration_20260730_v21', 'true');
             }
         }
 
